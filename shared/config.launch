@@ -1,0 +1,11 @@
+<launch>
+
+    <!-- Run the EKF Localisation Node -->
+    <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization">
+        <rosparam command="load" file="/program/src/put_odometry/launch/config.yaml"/>
+    </node>
+
+    <!-- Start the rosbag -->
+    <node pkg="rosbag" type="play" name="player" output="screen" args="--clock /program/smb_navigation.bag"/>
+
+</launch>
