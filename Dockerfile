@@ -19,13 +19,10 @@ RUN pip3 install --upgrade pip
 COPY requirements.txt /program/requirements.txt
 RUN pip3 install -r /program/requirements.txt
 
-# Install virtual CAN
-COPY ros2can /program/src/ros2can
-
 # Copy startup and refresh scripts
 COPY entrypoint.sh /program/
+
+# Change permissions
 RUN chmod 777 /program/entrypoint.sh
-COPY refresh.sh /program/
-RUN chmod 777 /program/refresh.sh
 
 WORKDIR /program
