@@ -1,5 +1,8 @@
 <launch>
 
+    <!-- Start python script for displaying data -->
+    <node pkg="put_odometry" name="display" type="display.py" output="screen" />
+
     <!-- Run the EKF Localisation Node -->
     <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization">
         <rosparam command="load" file="/program/src/put_odometry/launch/config.yaml"/>

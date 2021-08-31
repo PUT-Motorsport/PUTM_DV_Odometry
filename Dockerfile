@@ -5,7 +5,7 @@ RUN sudo apt-get -y update && sudo apt-get -y upgrade
 
 # Install ROS essentials
 RUN sudo apt-get -y install libeigen3-dev libcppunit-dev python3-psutil python3-future \
-                            python3-pip python-pip curl wget
+                            python3-pip python-pip curl wget python3-tk
 
 # Install robot-localization dependencies
 RUN sudo apt-get -y install ros-melodic-robot-localization ros-melodic-rviz ros-melodic-cv-bridge
