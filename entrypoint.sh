@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Create package directory
-catkin_create_pkg put_odometry std_msgs rospy roscpp robot_localization
+catkin_create_pkg put_odometry std_msgs rospy roscpp robot_localization xacro
 
 cp /shared/smb_navigation.bag /program/
 chmod +x smb_navigation.bag
@@ -14,9 +14,13 @@ mkdir launch
 cp /shared/config.launch launch/
 cp /shared/config.yaml launch/
 
-# Add odometry script
-cp /shared/display.py .
-chmod +x display.py
+# Copy urdf files
+mkdir visualization
+cp /shared/config.xacro visualization/
+
+# Add converter script
+cp /shared/convert.py .
+chmod +x convert.py
 
 cd /program/
 
