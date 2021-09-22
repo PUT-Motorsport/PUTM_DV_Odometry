@@ -3,8 +3,9 @@
 # Create package directory
 catkin_create_pkg put_odometry std_msgs rospy roscpp robot_localization xacro
 
-cp /shared/smb_navigation.bag /program/
-chmod +x smb_navigation.bag
+# For playing rosbag
+# cp /shared/fsds.bag /program/
+# chmod +x fsds.bag
 
 mv put_odometry src/put_odometry
 

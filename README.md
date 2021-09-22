@@ -13,9 +13,10 @@ The project is by default made with an intention to run inside [Docker](https://
 
 a) Clone the repository
 
-b) Set **VOLUME** variable to the location of `shared` folder:
+b) Set **VOLUME** and **HOME** variable to the location of `shared` folder and home directory:
 ```bash
 $   export VOLUME="location/here"
+$   export HOME="/home/username"
 ```
 
 c) Start the project by running the `start.sh` script:
@@ -24,6 +25,11 @@ $   ./start.sh
 ```
 
 Docker is multi-platform software, so you can convert the `.sh` script to the script format your system supports.
+
+d) Once the container is up, start the project:
+```bash
+$   ./entrypoint.sh
+```
 
 ### Without Docker
 
