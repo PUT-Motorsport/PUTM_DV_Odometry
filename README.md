@@ -1,53 +1,98 @@
-# PUT_DV Odometry
+# PUTM_DV_Odometry 2020 (With Formula Student Simulator)
+Odometry branch with integrated Formula Student Simulator.  
+Based on:
+- [Formula-Student-Driverless-Simulator](https://fs-driverless.github.io/Formula-Student-Driverless-Simulator/latest/getting-started/)
+- [ROS-melodic](http://wiki.ros.org/melodic/Installation/Ubuntu)
+- [Unreal Engine docker image with CUDA, VirtualGL and Vulkan](https://github.com/adamrehn/ue4-runtime)
+- [robot_localization](http://wiki.ros.org/robot_localization)
 
-ROS package for calculating position of the robot based on GPS odometry and IMU.
-Packages used:
-* [robot_localization](http://wiki.ros.org/robot_localization)
-* [ros2can](https://github.com/PUT-Motorsport/PUTM_DV_utils_2020/tree/can)
+## Requirements
 
-## Installation
+### Hardware
 
-### With Docker (recommended)
+*  recommended system requirements:
+    - 8 core 2.3Ghz CPU
+    - 12 GB memory
+    - 30GB free SSD storage
+    - NVidia card with Vulkan support and 3 GB of memory
+* testing machine:
+    - OS: Ubuntu 20.04.1 LTS 64-bit
+    - Intel® Core™ i5-8400 CPU @ 2.80GHz × 6
+    - RAM 15,6 GiB
+    - GeForce GTX 1060 6GB
+* docker image size is about 6 GB
 
-The project is by default made with an intention to run inside [Docker](https://www.docker.com/) on **Linux** container for testing.
 
-a) Clone the repository
+### Software
 
-b) Set **VOLUME** variable to the location of `shared` folder:
+- docker 19.03
+- NVIDIA GPU - [nvidia-docker2](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker) section installation on Ubuntu
+
+## Instalation
+
+0. Clone repository
+
 ```bash
-$   export VOLUME="location/here"
+git clone https://github.com/PUT-Motorsport/PUTM_DV_Odometry_2020.git
+git checkout plotting
+cd PUTM_DV_Odometry
 ```
 
-c) Start the project by running the `start.sh` script:
+1. Build docker image (on testing machine build time is 13m9,531s)
+
 ```bash
-$   ./start.sh
+docker build -t odom:latest .
 ```
 
-Docker is multi-platform software, so you can convert the `.sh` script to the script format your system supports.
-
-### Without Docker
-
-If you really insist on running this project without Docker, download all requirements for virtual CAN:
+2. Add docker access to nvidia (it's require sudo privileges to execute)
 
 ```bash
-$   sudo apt-get -y install libeigen3-dev libcppunit-dev python3-psutil python3-future \
-                            python3-pip python-pip curl wget
+chmod +x xauth.sh
+./xauth.sh
 ```
 
-Then all requirements for robot_localization package:
-
+3. Define shared folder
 ```bash
-$   sudo apt-get -y install ros-melodic-robot-localization ros-melodic-rviz ros-melodic-cv-bridge
+export SHARED="location here"
 ```
 
-Install all python packages required to run ros2can:
+3. Run docker image
+
 ```bash
-$   pip3 install -r /program/requirements.txt
+./start.sh
 ```
 
-Create `/program` folder or change 15th line in `entrypoint.sh` file to the location of your project.
+4. You can connect to the machine from another terminal using
 
-Run the script:
 ```bash
-$   ./entrypoint.sh
+./run_container.sh
+```
+
+## Usage
+
+1. Start Formula Student simulation
+
+```bash
+./FSDS.sh -nosound
+```
+
+2. Start ros bridge
+
+```bash
+roslaunch fsds_ros_bridge fsds_ros_bridge.launch
+```
+
+3. Start autonomous driving
+```bash
+python3 python/examples/autonomous_example.py
+```
+
+4. Start python script converting FSDS output to robot_localization
+```bash
+python3 /home/ue4/share/convert.py
+```
+
+5. Run visualization and sensor fusion
+```
+roslaunch /home/ue4/share/start.launch
 ```

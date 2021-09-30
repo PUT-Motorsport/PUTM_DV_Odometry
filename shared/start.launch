@@ -1,0 +1,23 @@
+<launch>
+
+    <param name="robot_description" command="$(find xacro)/xacro -\-inorder '/home/ue4/share/config.xacro'" />
+
+    <node type="ekf_localization_node" name="ekf_localization" pkg="robot_localization">
+        <rosparam command="load" file="/home/ue4/share/config.yaml" />
+    </node>
+    <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform_node" respawn="true">
+        <param name="magnetic_declination_radians" value="0" />
+        <param name="yaw_offset" value="0" />
+        <param name="zero_altitude" value="true" />
+        <param name="broadcast_cartesian_transform" value="false" />
+        <param name="publish_filtered_gps" value="false" />
+        <param name="use_odometry_yaw" value="false" />
+        <param name="wait_for_datum" value="false" />
+        
+        <remap from="/imu/data" to="/imu" />
+        <remap from="/gps/fix" to="/gps" />
+        <remap from="/odometry/filtered" to="/odometry/filtered" />
+    </node>
+
+    <node type="rviz" name="rviz" pkg="rviz" args="-d $(find fsds_ros_bridge)/rviz/default.rviz" /> -->
+</launch>
