@@ -68,6 +68,24 @@ If you are using `Ardusimple RTK` GPS, also modify `config/ardu.yaml` file.
 In `bags` folder you will find recorded rosbags. Files following the name `ardu*.bag` have been recorded using **Ardusimple RTK**,
 and `groove*.bag` bags have been recorded using **Groove** GPS. Every one of them is 10 minutes long.
 
+## Important notes
+
+1. `altitude` in GPS message (so **/gps/fix** or **/fix**) cannot be assigned to `NaN`! If you do that, `nmea_navsat_driver` will ignore it and not convert GPS data into Odometry, which means no fusion will take place! The `convert.py` script will replace `NaN` with `0.0`, which will solve the problem. If you are using Ardusimple RTK GPS, it will return altitude, so you don't need to worry about it and don't have to run the script.
+
+2. IMU recordings (and UM7 in general) does not conform to **REP-105** standard (more about it [here](http://docs.ros.org/en/kinetic/api/robot_localization/html/integrating_gps.html#imu-data)), which is why you need to not remove the inversion in config file:
+```
+<param name="yaw_offset" value="1.5707963"/>
+```
+Otherwise you will get wrong results!
+
+3. By default, IMU's frame id is `imu_link` and GPS's is `gps`, so you need to cast them into `base_link` using `tf2` package:
+```
+<node pkg="tf2_ros" type="static_transform_publisher" name="bl_to_imu" args="0 0 0 0 0 0 1 base_link imu_link" />
+<node pkg="tf2_ros" type="static_transform_publisher" name="bl_to_gps" args="0 0 0 0 0 0 1 base_link gps" />
+```
+
+4. The feedback loop from **robot_localization** to **nmea_navsat_driver** is intentional! GPS will listen for IMU message to set its heading and then it will unsubscribe from the topic, so it's important you do not remove it.
+
 
 Reference libraries:
 * [robot_localization](http://docs.ros.org/en/api/robot_localization/html/index.html)
