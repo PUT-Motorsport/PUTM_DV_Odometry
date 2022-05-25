@@ -29,7 +29,9 @@
     <arg name="map_file" default="$(find odom)/maps/map_config.yaml" />
     <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
 
+    <!--
     <node pkg="odom" name="convert" type="$(find odom)/scripts/convert.py" output="screen" />
+    -->
 
     <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization_global">
         <rosparam command="load" file="($find odom)/config/ekf_global.yaml" />
