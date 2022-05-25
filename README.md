@@ -72,7 +72,7 @@ and `groove*.bag` bags have been recorded using **Groove** GPS. Every one of the
 
 1. `altitude` in GPS message (so **/gps/fix** or **/fix**) cannot be assigned to `NaN`! If you do that, `nmea_navsat_driver` will ignore it and not convert GPS data into Odometry, which means no fusion will take place! The `convert.py` script will replace `NaN` with `0.0`, which will solve the problem. If you are using Ardusimple RTK GPS, it will return altitude, so you don't need to worry about it and don't have to run the script.
 
-2. IMU recordings (and UM7 in general) does not conform to **REP-105** standard (more about it [here](http://docs.ros.org/en/kinetic/api/robot_localization/html/integrating_gps.html#imu-data)), which is why you need to not remove the inversion in config file:
+2. IMU recordings (and UM7 in general) does not conform to **REP-105** standard (more about it [here](http://docs.ros.org/en/kinetic/api/robot_localization/html/integrating_gps.html#imu-data)), which is why you need to keep the inversion in config file:
 ```
 <param name="yaw_offset" value="1.5707963"/>
 ```
