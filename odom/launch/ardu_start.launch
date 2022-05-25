@@ -1,0 +1,59 @@
+<launch>
+    <!-- <arg name="node_name" default="gps"/>
+    <arg name="param_path" default="$(find odom)/config/ardu.yaml" />
+    <arg name="output" default="screen" />
+    <arg name="respawn" default="true" />
+    <arg name="respawn_delay" default="30" />
+    <arg name="clear_params" default="true" /> -->
+
+    <!-- Start IMU communication -->
+    <!-- <node pkg="um7" name="imu" type="um7_driver" args="_port:=/dev/ttyUSB0"/> -->
+
+    <!-- Start Ardusimple RTK GPS communication -->
+    <!-- <node pkg="ublox_gps" type="ublox_gps" name="$(arg node_name)"
+        output="$(arg output)"
+        clear_params="$(arg clear_params)"
+        respawn="$(arg respawn)"
+        respawn_delay="$(arg respawn_delay)">
+        <rosparam command="load" file="$(arg param_path)" />
+    </node>-->
+
+    <!-- Enable robot visualization in rviz -->
+    <param name="robot_description" command="xacro --inorder '$(find odom)/config/robot.xacro'" />
+
+    <!-- Enable TF2 to use frame_ids that are not default in robot_localization -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="bl_to_imu" args="0 0 0 0 0 0 1 base_link imu_link" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="bl_to_gps" args="0 0 0 0 0 0 1 base_link gps" />
+
+    <!-- Start map server -->
+    <arg name="map_file" default="$(find odom)/maps/map_config.yaml" />
+    <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+
+    <node pkg="odom" name="convert" type="$(find odom)/scripts/convert.py" output="screen" />
+
+    <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization_global">
+        <rosparam command="load" file="($find odom)/config/ekf_global.yaml" />
+        <remap from="/odometry/filtered" to="/odometry/filtered/global" />
+    </node>
+
+    <!-- Run the GPS conversion node -->
+    <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform_node" respawn="true">
+        <param name="frequency" value="1"/>
+        <param name="yaw_offset" value="1.5707963"/>
+        <param name="zero_altitude" value="true"/>
+        <param name="wait_for_datum" value="false"/>
+        <param name="publish_filtered_gps" value="true"/>
+        
+        <remap from="/imu/data" to="/imu/data" />
+        <remap from="/gps/fix" to="/gps/fix" />
+        <remap from="/odometry/filtered" to="/odometry/filtered/global" />
+    </node>
+
+
+    <!-- Start the rosbag -->
+    <node pkg="rosbag" type="play" name="player" output="screen" args="$(find odom)/bags/"/>
+
+    <!-- Start rviz -->
+    <node pkg="rviz" name="rviz" type="rviz" args="-d $(find odom)/rviz/config.rviz" />
+
+</launch>
