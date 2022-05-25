@@ -1,5 +1,13 @@
 # PUT_DV Odometry
 
+This repository has three branches:
+
+* [main](https://github.com/PUT-Motorsport/PUTM_DV_Odometry) - Docker image with `robot_localization` and fusion based on `CAN` communication
+* [plotting](https://github.com/PUT-Motorsport/PUTM_DV_Odometry/tree/plotting) - Docker image doing the same as above, but instead of using real data pulling information from FS Student simulation
+* [gps_imu](https://github.com/PUT-Motorsport/PUTM_DV_Odometry/tree/gps_imu) - local package for GPS (Groove or Ardusimple RTK) fusion with IMU using `robot_localization`
+
+## Main package
+
 ROS package for calculating position of the robot based on GPS odometry and IMU.
 Packages used:
 * [robot_localization](http://wiki.ros.org/robot_localization)
